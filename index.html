@@ -1,0 +1,238 @@
+<html>
+
+<head>
+    <title>Magmar Sucks - The Ranking of Pokemon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="q8wMroFDTb5WMGRz7PYH4ohR2U8VAhXxjcJuKY9_K9g" />
+
+    <!-- Handlebars -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js" integrity="sha256-rMOSOM5HDzVEMoVZTv2189+RKSTSgY5ZKfTfap7q2zE=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <!-- / Bootstrap 4 -->
+
+    <!-- Markdown to HTML -->
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.6.4/dist/showdown.min.js"></script>
+</head>
+
+<body class="container">
+    <div class="row mb-2">
+        <img class="img-fluid" src="./assets/images/banner-md.png" title="This is a banner image, it's pretty shit." alt="This is a banner image, it's pretty shit.">
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <p>Pokemon are loved by all, unless you're Magmar - if you're Magmar, you suck. From the depths of the Pokedex, we bring you a discussion about the world most (un)interesting Pokemon, and rank them from most to least interesting, one Pokemon
+                at a time.</p>
+            <p>
+                Episodes generally release every other day.
+            </p>
+        </div>
+        <div class='col-sm-2'>
+            Subscribe On:
+            <a href='http://play.google.com/store/music/podcasts/portal/#p:id=playpodcast/series&a=100944439?utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+                <img class="w-100" alt='Get it on Google Play' src='./assets/images/play-badge.png' />
+            </a>
+            <br>
+            <a href="https://geo.itunes.apple.com/us/podcast/magmar-sucks/id1125767902?mt=2">
+                <img class="w-100" alt="Get it on iTunes" src="./assets/images/itunes-badge.png" />
+            </a>
+        </div>
+    </div>
+
+    <nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#currentOutput" role="tab">Current</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#pre2Output" role="tab" onclick="renderRanking('old', 'preUpdate2', 'pre2Output');">E056-E130</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#pre1Output" role="tab" onclick="renderRanking('old', 'preUpdate1', 'pre1Output');">E000-E055</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="tab-content">
+        <div class="tab-pane fade show active" id="currentOutput" role="tabpanel"></div>
+        <div class="tab-pane fade" id="pre2Output" role="tabpanel"></div>
+        <div class="tab-pane fade" id="pre1Output" role="tabpanel"></div>
+    </main>
+
+    <script id="current" type="text/x-handlebars-template">
+        {{#each datas as |tier|}}
+        <div class="card mb-2">
+            <div class="card-block">
+                <div class='card-title text-center'>
+                    <h4>{{@key}}</h4>
+                </div>
+                <table class="table table-striped">
+                    {{> headers}}
+                    <tbody>
+                        {{#each tier as |poke|}} {{> current-row}} {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <script id="old" type="text/x-handlebars-template">
+        {{#each datas as |tier|}}
+        <div class="card mb-2">
+            <div class="card-block">
+                {{#if @key}}
+                    <div class='card-title text-center'>
+                        <h4>{{@key}}</h4>
+                    </div>
+                {{/if}}
+                <table class="table table-striped">
+                    {{> old-headers}}
+                    <tbody>
+                        {{#each tier as |poke|}} {{> old-row}} {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <!-- Partials: Change these to change the table layout -->
+    <script id="table-headers-partial" type="text/x-handlebars-template">
+        <thead class="table-inverse">
+            <tr>
+                <th class="fit">
+                    Pok&eacute;dex
+                </th>
+                <th class="fit">
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th class="fit"></th>
+            </tr>
+        </thead>
+    </script>
+
+    <script id="old-table-headers-partial" type="text/x-handlebars-template">
+        <thead class="table-inverse">
+            <tr>
+                <th class="fit">
+                    Pok&eacute;dex
+                </th>
+                <th class="fit">
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+        </thead>
+    </script>
+
+    <script id="current-poke-row-partial" type="text/x-handlebars-template">
+        {{#if d}}
+        <tr>
+            <td class="fit">
+                #{{b}}
+            </td>
+            <td class="fit">
+                <a href="http://bulbapedia.bulbagarden.net/wiki/{{a}}">{{a}}</a>
+            </td>
+            <td id="{{d}}-container">
+                {{e}}
+            </td>
+            <td>
+                <a href="#{{d}}" data-toggle='collapse' data-target="#{{d}}" aria-expanded="false" aria-controls="{{d}}" onclick="renderMoreInfo({{d}})">Listen</a>
+            </td>
+        </tr>
+        {{/if}}
+    </script>
+
+    <script id="old-poke-row-partial" type="text/x-handlebars-template">
+        {{#if d}}
+        <tr>
+            <td class="fit">
+                #{{b}}
+            </td>
+            <td class="fit">
+                <a href="http://bulbapedia.bulbagarden.net/wiki/{{a}}">{{a}}</a>
+            </td>
+            <td id="{{d}}-container">
+                {{e}}
+            </td>
+        </tr>
+        {{/if}}
+    </script>
+
+
+    <script id="more-info-partial" type="text/x-handlebars-template">
+        <div class="collapse pt-2" id="{{datas.id}}">
+            <iframe class="mb-2" frameborder='0' height='36px' scrolling='no' seamless src='https://simplecast.com/e/{{datas.id}}?style=light' width='100%'></iframe>
+            <div id="{{datas.id}}-show-notes-container">
+                {{datas.showNotes}}
+            </div>
+        </div>
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            registerTemplates();
+            renderRanking('current', 'ranking', 'currentOutput');
+            // renderMoreInfo('57805');
+        });
+
+        function registerTemplates() {
+            Handlebars.registerPartial("headers", $("#table-headers-partial").html());
+            Handlebars.registerPartial("old-headers", $("#old-table-headers-partial").html());
+            Handlebars.registerPartial("current-row", $("#current-poke-row-partial").html());
+            Handlebars.registerPartial("old-row", $("#old-poke-row-partial").html());
+            Handlebars.registerPartial("more-info", $("#more-info-partial").html());
+        }
+
+        function renderRanking(template, file, outlet) {
+            $('#' + outlet).empty();
+
+            template  = Handlebars.compile($('#' + template).html());
+            $.getJSON("./assets/data/rankings/" + file + ".json", function(data) {
+                var html = template({
+                    datas: data
+                });
+                $('#' + outlet).prepend(html);
+            });
+        }
+
+        function renderMoreInfo(episodeId) {
+            let id = episodeId.toString();
+            var converter;
+            if (!$("#" + id).length) {
+                if (!converter) {
+                    converter = new showdown.Converter();
+                }
+                var moreInfoDict = {};
+                var template = Handlebars.compile($('#more-info-partial').html());
+                $.getJSON(
+                    './assets/data/episode-data/' + id + '.json',
+                    function(data) {
+                        moreInfoDict[id] = data;
+                        var showNotes = converter.makeHtml(data.long_description);
+                        var html = template({
+                            datas: moreInfoDict[id]
+                        });
+                        $('#' + id + "-container").append(html);
+                        $('#' + id + '-show-notes-container').append(showNotes);
+                        $('#' + id).collapse('show');
+                    }
+                );
+            }
+        }
+    </script>
+</body>
+
+</html>
