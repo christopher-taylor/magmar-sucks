@@ -33,9 +33,7 @@
         </div>
         <div class='col-sm-2'>
             Subscribe On:
-            <a href='http://play.google.com/store/music/podcasts/portal/#p:id=playpodcast/series&a=100944439?utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-                <img class="w-100" alt='Get it on Google Play' src='./assets/images/play-badge.png' />
-            </a>
+            <a href='https://playmusic.app.goo.gl/?ibi=com.google.PlayMusic&amp;isi=691797987&amp;ius=googleplaymusic&amp;link=https://play.google.com/music/m/I6x5pmmhw5dzo52nb6vplkuerza?t%3DMagmar_Sucks%26pcampaignid%3DMKT-na-all-co-pr-mu-pod-16' rel='nofollow'><img class="w-100" alt='Get it on Google Play' src='./assets/images/play-badge.png' />
             <br>
             <a href="https://geo.itunes.apple.com/us/podcast/magmar-sucks/id1125767902?mt=2">
                 <img class="w-100" alt="Get it on iTunes" src="./assets/images/itunes-badge.png" />
@@ -49,10 +47,10 @@
                 <a class="nav-link active" data-toggle="tab" href="#currentOutput" role="tab">Current</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#pre2Output" role="tab" onclick="renderRanking('old', 'preUpdate2', 'pre2Output');">E056-E130</a>
+                <a class="nav-link" data-toggle="tab" href="#pre2Output" role="tab" onclick="renderRanking('preUpdate2', 'pre2Output');">E056-E130</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#pre1Output" role="tab" onclick="renderRanking('old', 'preUpdate1', 'pre1Output');">E000-E055</a>
+                <a class="nav-link" data-toggle="tab" href="#pre1Output" role="tab" onclick="renderRanking('preUpdate1', 'pre1Output');">E000-E055</a>
             </li>
         </ul>
     </nav>
@@ -73,27 +71,7 @@
                 <table class="table table-striped">
                     {{> headers}}
                     <tbody>
-                        {{#each tier as |poke|}} {{> current-row}} {{/each}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {{/each}}
-    </script>
-
-    <script id="old" type="text/x-handlebars-template">
-        {{#each datas as |tier|}}
-        <div class="card mb-2">
-            <div class="card-block">
-                {{#if @key}}
-                    <div class='card-title text-center'>
-                        <h4>{{@key}}</h4>
-                    </div>
-                {{/if}}
-                <table class="table table-striped">
-                    {{> old-headers}}
-                    <tbody>
-                        {{#each tier as |poke|}} {{> old-row}} {{/each}}
+                        {{#each tier as |poke|}} {{> row}} {{/each}}
                     </tbody>
                 </table>
             </div>
@@ -119,23 +97,7 @@
         </thead>
     </script>
 
-    <script id="old-table-headers-partial" type="text/x-handlebars-template">
-        <thead class="table-inverse">
-            <tr>
-                <th class="fit">
-                    Pok&eacute;dex
-                </th>
-                <th class="fit">
-                    Name
-                </th>
-                <th>
-                    Description
-                </th>
-            </tr>
-        </thead>
-    </script>
-
-    <script id="current-poke-row-partial" type="text/x-handlebars-template">
+    <script id="poke-row-partial" type="text/x-handlebars-template">
         {{#if d}}
         <tr>
             <td class="fit">
@@ -143,38 +105,23 @@
             </td>
             <td class="fit">
                 <a href="http://bulbapedia.bulbagarden.net/wiki/{{a}}">{{a}}</a>
-            </td>
-            <td id="{{d}}-container">
-                {{e}}
             </td>
             <td>
-                <a href="#{{d}}" data-toggle='collapse' data-target="#{{d}}" aria-expanded="false" aria-controls="{{d}}" onclick="renderMoreInfo({{d}})">Listen</a>
-            </td>
-        </tr>
-        {{/if}}
-    </script>
-
-    <script id="old-poke-row-partial" type="text/x-handlebars-template">
-        {{#if d}}
-        <tr>
-            <td class="fit">
-                #{{b}}
-            </td>
-            <td class="fit">
-                <a href="http://bulbapedia.bulbagarden.net/wiki/{{a}}">{{a}}</a>
-            </td>
-            <td id="{{d}}-container">
                 {{e}}
+                <div data-show-notes-holder="{{d}}">
+                </div>
+            </td>
+            <td>
+                <a href="#{{d}}" data-toggle='collapse' onclick="renderMoreInfo({{d}})">Listen</a>
             </td>
         </tr>
         {{/if}}
     </script>
-
 
     <script id="more-info-partial" type="text/x-handlebars-template">
-        <div class="collapse pt-2" id="{{datas.id}}">
+        <div class="collapse pt-2" data-collapse-id="{{datas.id}}">
             <iframe class="mb-2" frameborder='0' height='36px' scrolling='no' seamless src='https://simplecast.com/e/{{datas.id}}?style=light' width='100%'></iframe>
-            <div id="{{datas.id}}-show-notes-container">
+            <div data-show-notes-container="{{datas.id}}">
                 {{datas.showNotes}}
             </div>
         </div>
@@ -182,26 +129,24 @@
 
 
     <script>
+        const MORE_INFO_TEMPLATE = Handlebars.compile($('#more-info-partial').html());
+        const RANKING_TEMPLATE = Handlebars.compile($('#current').html());
+        const CONVERTER = new showdown.Converter()
         $(document).ready(function() {
             registerTemplates();
-            renderRanking('current', 'ranking', 'currentOutput');
-            // renderMoreInfo('57805');
+            renderRanking('ranking', 'currentOutput');
         });
 
         function registerTemplates() {
             Handlebars.registerPartial("headers", $("#table-headers-partial").html());
-            Handlebars.registerPartial("old-headers", $("#old-table-headers-partial").html());
-            Handlebars.registerPartial("current-row", $("#current-poke-row-partial").html());
-            Handlebars.registerPartial("old-row", $("#old-poke-row-partial").html());
+            Handlebars.registerPartial("row", $("#poke-row-partial").html());
             Handlebars.registerPartial("more-info", $("#more-info-partial").html());
         }
 
-        function renderRanking(template, file, outlet) {
+        function renderRanking(file, outlet) {
             $('#' + outlet).empty();
-
-            template  = Handlebars.compile($('#' + template).html());
             $.getJSON("./assets/data/rankings/" + file + ".json", function(data) {
-                var html = template({
+                var html = RANKING_TEMPLATE({
                     datas: data
                 });
                 $('#' + outlet).prepend(html);
@@ -209,27 +154,18 @@
         }
 
         function renderMoreInfo(episodeId) {
-            let id = episodeId.toString();
-            var converter;
-            if (!$("#" + id).length) {
-                if (!converter) {
-                    converter = new showdown.Converter();
-                }
-                var moreInfoDict = {};
-                var template = Handlebars.compile($('#more-info-partial').html());
-                $.getJSON(
-                    './assets/data/episode-data/' + id + '.json',
-                    function(data) {
-                        moreInfoDict[id] = data;
-                        var showNotes = converter.makeHtml(data.long_description);
-                        var html = template({
-                            datas: moreInfoDict[id]
-                        });
-                        $('#' + id + "-container").append(html);
-                        $('#' + id + '-show-notes-container').append(showNotes);
-                        $('#' + id).collapse('show');
-                    }
-                );
+            if (!$('.tab-pane.active [data-show-notes-container=' + episodeId + ']').length) {
+                $.getJSON('./assets/data/episode-data/' + episodeId + '.json', function(data) {
+                    var showNotes = CONVERTER.makeHtml(data.long_description);
+                    var html = MORE_INFO_TEMPLATE({
+                        datas: data
+                    });
+                    $('.tab-pane.active [data-show-notes-holder=' + episodeId + ']').append(html);
+                    $('.tab-pane.active [data-show-notes-container=' + episodeId + ']').append(showNotes);
+                    $('.tab-pane.active [data-collapse-id=' + episodeId + ']').collapse('toggle');
+                });
+            } else {
+                $('.tab-pane.active [data-collapse-id=' + episodeId + ']').collapse('toggle');
             }
         }
     </script>
